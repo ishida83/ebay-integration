@@ -1,0 +1,40 @@
+{
+  "name": "ebay-integration",
+  "version": "1.0.0",
+  "description": "ebay open source",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ishida83/ebay-integration.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ishida83/ebay-integration/issues"
+  },
+  "homepage": "https://github.com/ishida83/ebay-integration#readme",
+  "devDependencies": {
+    "lerna": "^3.22.1",
+    "puppeteer": "^5.5.0",
+    "typescript": "3.8.3"
+  },
+  "dependencies": {
+    "axios": "0.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1"
+  },
+  "optionalDependencies": {
+    "cheerio": "^1.0.0-rc.5",
+    "get-urls": "^9.2.0",
+    "got": "^11.8.1",
+    "node-fetch": "^2.6.0"
+  }
+}
