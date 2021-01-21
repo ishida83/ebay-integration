@@ -4,6 +4,11 @@ const cors = require('cors')
 const fs = require("fs");
 const path = require("path");
 
+require('http').globalAgent.options.keepAlive = true;
+require('https').globalAgent.options.keepAlive = true;
+require('http').globalAgent.maxSockets = 5000; // Infinity;
+require('https').globalAgent.maxSockets = 5000; // Infinity;
+
 app.use(cors())
 
 // const amazon = require('./amazon')

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "HTTP_MAX_HEADER_SIZE=65535 node src/index.js",
     "dev": "nodemon src/index.js"
   },
   "keywords": [
@@ -13,11 +13,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "get-urls": "^9.2.0",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^3.3.0"
+    "puppeteer": "^5.5.0"
   }
 }

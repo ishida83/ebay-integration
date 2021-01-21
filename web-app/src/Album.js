@@ -20,6 +20,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
 import { CardHeader } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 function Copyright() {
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   cardMedia: {
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '106.25%', // 16:9
   },
   cardContent: {
     flexGrow: 1,
@@ -87,7 +88,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function Album() {
   const classes = useStyles();
-	const [search, setSearch] = React.useState('ps5');
+  const [loading, setLoading] = React.useState(false);
+	const [search, setSearch] = React.useState();
 	const [results, setResults] = React.useState([]);
 	// const [chipData, setChipData] = React.useState([
   //   { key: 0, label: "Angular" },
@@ -100,7 +102,9 @@ export default function Album() {
 	const [chipData, setChipData] = React.useState([]);
 
 	React.useEffect(() => {
+    setLoading(true);
 		fetch('http://localhost:4040/batch').then((res) => res.json()).then((payload) => {
+      setLoading(false);
 			setKeywords(payload.data);
 			let tempSet = new Set();
 			payload.data.forEach((it)=>{
@@ -109,14 +113,24 @@ export default function Album() {
 				})
 			});
 			setChipData(Array.from(tempSet));
-		});
+		}).catch(e=>{
+      console.error(e);
+      setLoading(false);
+    })
 	}, [])
 
 	React.useEffect(() => {
-		fetch(`http://localhost:4040/${search}`).then((res) => res.json()).then((payload) => {
-			// console.log(payload);
-			setResults(payload.ebay);
-		});
+		if(search && search.length > 0) {
+      setLoading(true);
+      fetch(`http://localhost:4040/${search}`).then((res) => res.json()).then((payload) => {
+        // console.log(payload);
+        setResults(payload.ebay);
+        setLoading(false);
+      }).catch(e=>{
+        console.error(e);
+        setLoading(false);
+      })
+    }
 	}, [search])
 
 	const handleDelete = (chipToDelete) => () => {
@@ -147,6 +161,7 @@ export default function Album() {
   return (
     <React.Fragment>
       <CssBaseline />
+      {loading && <LinearProgress />}
       <AppBar position="relative">
         <Toolbar>
           <CameraIcon className={classes.icon} />
@@ -178,24 +193,23 @@ export default function Album() {
                 }
 
                 return (
-                  <Card>
-										<CardHeader title="Text on Card">
-										</CardHeader>
+                  <Card key={idx}>
+                    <CardHeader title="Text on Card"></CardHeader>
                     <CardContent>
                       {data.keywords.map((d, index) => {
                         if (!d.name || chipData.length === 0) return;
-												let chip = chipData.find((it) => it.name === d.name);
+                        let chip = chipData.find((it) => it.name === d.name);
                         return (
                           <Chip
                             icon={icon}
                             label={chip.name}
                             key={idx + "-" + index}
                             clickable
-                            color={chip.isSelected ? 'primary' : "default"}
+                            color={chip.isSelected ? "primary" : "default"}
                             onDelete={handleDelete(chip)}
                             onClick={handleClick(chip)}
                             className={classes.chip}
-                            deleteIcon={chip.isSelected && <DoneIcon />}
+                            deleteIcon={chip.isSelected ? <DoneIcon /> : null}
                           />
                         );
                       })}
@@ -282,7 +296,7 @@ export default function Album() {
         <Container className={classes.cardGrid} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {results.map((card, idx) => (
+            {results.filter(i=>!!i.url).map((card, idx) => (
               <Grid item key={idx} xs={12} sm={6} md={4}>
                 <Card className={classes.card}>
                   <CardMedia
@@ -290,13 +304,11 @@ export default function Album() {
                     image={card.img}
                     title={card.name}
                   />
-                  <CardContent className={classes.cardContent}>
+                  <CardContent className={classes.cardContent} align="left">
                     <Typography gutterBottom variant="h5" component="h2">
                       {card.price}
                     </Typography>
-                    <Typography>
-                      {card.name}
-                    </Typography>
+                    <Typography>{card.name}</Typography>
                   </CardContent>
                   <CardActions>
                     <Button
@@ -314,6 +326,11 @@ export default function Album() {
               </Grid>
             ))}
           </Grid>
+          {(!results || results.length <= 1) && (
+            <Typography component="h1" variant="h5" align="center" color="textPrimary" gutterBottom>
+              这里什么都没有
+            </Typography>
+          )}
         </Container>
       </main>
       {/* Footer */}

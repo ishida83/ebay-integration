@@ -13,7 +13,9 @@ let ebay = async(url) => {
         // create new page 
         const page = await browser.newPage() 
 
-        await page.goto(url)  
+        await page.setDefaultNavigationTimeout(0); 
+
+        await page.goto(url, {waitUntil: 'load', timeout: 0})  
         
         // evaluate the page
         const products = await page.evaluate(() => {
