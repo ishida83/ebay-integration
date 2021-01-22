@@ -3,7 +3,8 @@
     "packages/*",
     "src/**",
     "frontend/**",
-    "server/**"
+    "server/**",
+    "web-app/**"
   ],
   "version": "0.0.1"
 }

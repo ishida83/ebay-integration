@@ -1,6 +1,13 @@
 const express = require('express') 
 const app = express()
-var cors = require('cors')
+const cors = require('cors')
+const fs = require("fs");
+const path = require("path");
+
+require('http').globalAgent.options.keepAlive = true;
+require('https').globalAgent.options.keepAlive = true;
+require('http').globalAgent.maxSockets = 5000; // Infinity;
+require('https').globalAgent.maxSockets = 5000; // Infinity;
 
 app.use(cors())
 
@@ -12,6 +19,33 @@ const port = process.env.PORT || 4040
 app.get('/', async (req, res) => {
     await res.send("Add search term to end of the url /'term', for example http://localhost:4040/cup")
 })
+
+
+app.get("/batch", async (req, res) => {
+  const dir = "./data";
+
+  const result = fs
+    .readdirSync(path.resolve(__dirname, '..', '..', dir))
+    .filter((name) => {
+      return path.extname(name) === ".json" && name.includes("_B");
+    })
+    .map((name) => {
+      return {
+          keywords: require(path.join(__dirname, '..', '..', dir, name))
+            .fullTextAnnotation.text
+            // .replace(/\n/gi, "\r\n")
+            .replace(/No. /gi, "#")
+            .replace(/No./gi, "#")
+            .split("\n").map(it => ({name: it, isSelected: false}))
+            // .slice(1, 5)
+            // .join(" ");
+      };
+    });
+
+    res.send({
+        data: result
+    });
+});
   
 app.get('/:search', async (req, res) => { 
     // get parameter from url

@@ -4,7 +4,14 @@ const puppeteer = require('puppeteer');
 const fs = require("fs");
 const path = require("path");
 
-const vgmUrl= 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=panini&_sacat=0&LH_TitleDesc=0&_osacat=0&_odkw=nba'; //'https://www.vgmusic.com/music/console/nintendo/nes';
+const vgmUrl= 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=panini&_sacat=0&LH_TitleDesc=0&_osacat=0&_odkw=nba'; 
+// const vgmUrl= 'https://www.vgmusic.com/music/console/nintendo/nes';
+
+require('http').globalAgent.options.keepAlive = true;
+require('https').globalAgent.options.keepAlive = true;
+require('http').globalAgent.maxSockets = 5000; // Infinity;
+require('https').globalAgent.maxSockets = 5000; // Infinity;
+
 
 const isMidi = (i, link) => {
   // Return false if there is no href attribute.
@@ -121,4 +128,4 @@ const mainApp4 = () => {
 }
 
 
-mainApp4();
+mainApp3();
